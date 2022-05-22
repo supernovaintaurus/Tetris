@@ -5,13 +5,18 @@ import piece.Piece;
 import piece.PieceGenerator;
 import states.*;
 
+
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
 public class Game {
 
 	private static final int NEXT_PIECE_X = 11;
 	private static final int NEXT_PIECE_Y = 1;
+
+	public static final int HELD_PIECE_X = 11;
+	public static final int HELD_PIECE_Y = 12;
 
 	public static final int STARTING_PIECE_X = 4;
 	public static final int STARTING_PIECE_Y = 0;
@@ -36,16 +41,19 @@ public class Game {
 	
 	private Piece currentPiece;
 	private Piece nextPiece;
+	private Piece holdPiece;
 	
 	private boolean paused;
+	private boolean Canhold;
+
 
 	public Game(String title) {
 		this.setTitle(title);
-
 		this.field = new Field(Game.FIELD_HEIGHT, Game.FIELD_WIDTH);
-		
 		this.setCurrentPiece(PieceGenerator.generatePiece());
 		this.setNextPiece(PieceGenerator.generatePiece(Game.NEXT_PIECE_X, Game.NEXT_PIECE_Y));
+		this.setHoldPiece((PieceGenerator.generatePiece(Game.HELD_PIECE_X, Game.HELD_PIECE_Y)));
+
 	}		
 
 	private String getTitle() {
@@ -79,6 +87,13 @@ public class Game {
 	private void setNextPiece(Piece nextPiece) {
 		this.nextPiece = nextPiece;
 	}
+	private Piece getHoldPiece() {
+		return holdPiece;
+	}
+
+	private void setHoldPiece(Piece HoldPiece) {
+		this.holdPiece = holdPiece;
+	}
 
 	private boolean isPaused() {
 		return paused;
@@ -86,6 +101,12 @@ public class Game {
 
 	private void setPaused(boolean paused) {
 		this.paused = paused;
+	}
+	private boolean Canhold() {
+		return Canhold;
+	}
+	private void setCanhold(boolean Canhold) {
+		this.Canhold = Canhold;
 	}
 
 	private void init() {
@@ -95,10 +116,12 @@ public class Game {
 		menuState = new MenuState();
 		settingsState = new SettingsState();
 		this.setRunning(true);
+
+		}
 		// Setting the currentState to gameState because we do not have
 		// any more states set up
 		// StateManage.setCurrentState(gameState);
-	}
+
 
 	// The method that will update all the variables
 	private void tick() {
@@ -119,6 +142,7 @@ public class Game {
 			this.swithToNextPiece();			
 		} else {
 			currentPiece.tick();
+
 		}
 	}
 
@@ -134,25 +158,30 @@ public class Game {
 			this.display.getCanvas().createBufferStrategy(2);
 			// returns out of the method to prevent errors
 			return;
+
+
 		}
 
 		// Instantiates the graphics related to the bufferStrategy
 		this.graphics = this.bs.getDrawGraphics();
-		
+
 		// Clear the screen at every frame
 		this.graphics.clearRect(0, 0, this.display.getWidth(), this.display.getHeight());
 		// Beginning of drawing things on the screen
-
 		this.graphics.drawLine(300, 0, 300, 600);
 
 		this.field.render(this.graphics);
 		this.currentPiece.render(this.graphics);
 		this.nextPiece.render(this.graphics);
+		//this.holdPiece.render(this.graphics);
 
+
+		
 		// Checks if a State exists and render()
 		// if (StateManager.getState() != null){
 		// StateManager.getState().render(this.g);
-		// }
+		//}
+
 
 		// End of drawing objects
 
@@ -160,6 +189,7 @@ public class Game {
 		bs.show();
 		// Shows everything stored in the Graphics object
 		this.graphics.dispose();
+
 	}
 	
 	public void run() {
@@ -170,13 +200,21 @@ public class Game {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+
+					break;
+				}
+			this.tick();
+			this.render();
+			if(field.isPieceIntoBrick(currentPiece)){
 				break;
 			}
 
-			this.tick();
-			this.render();
-		}
-	}
+
+		}}
+
+
+
+
 
 	public void pause() {
 		this.paused = true;
@@ -192,10 +230,43 @@ public class Game {
 		// move it to the staring position of the field
 		nextPiece.movePieceToStartingPoing();									
 		// assign the current piece to be the old next piece
-		this.setCurrentPiece(nextPiece);				
+		this.setCurrentPiece(nextPiece);
+		Canhold = true;
 		// create new next piece
-		this.setNextPiece(PieceGenerator.generatePiece(Game.NEXT_PIECE_X, Game.NEXT_PIECE_Y));		
+		this.setNextPiece(PieceGenerator.generatePiece(Game.NEXT_PIECE_X, Game.NEXT_PIECE_Y));
+
+
+
 	}
+
+
+	public void PieceHold(){
+
+			if (!Canhold) {
+					return;
+				}
+				if (holdPiece == null) {
+					holdPiece = currentPiece;
+					currentPiece = PieceGenerator.generatePiece();
+				} else {
+					Piece tmp = currentPiece;
+					currentPiece = holdPiece;
+					holdPiece = tmp;
+
+				}
+				 {
+
+				Canhold =false;
+					 this.render();
+
+		}
+		
+			}
+
+
+
+
+
 
 	public void rotatePiece() {
 		this.currentPiece.rotate();

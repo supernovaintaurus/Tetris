@@ -32,6 +32,9 @@ public class InputHandler implements KeyListener {
 		} else if (keyCode == KeyEvent.VK_S) {
 			game.resume();
 		}
+		else if (keyCode == KeyEvent.VK_H){
+             game.PieceHold();
+		}
 	}
 
 	@Override
