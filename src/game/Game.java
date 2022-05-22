@@ -15,8 +15,8 @@ public class Game {
 	private static final int NEXT_PIECE_X = 11;
 	private static final int NEXT_PIECE_Y = 1;
 
-	public static final int HELD_PIECE_X = 11;
-	public static final int HELD_PIECE_Y = 12;
+	public static final int HELD_PIECE_X = 330;
+	public static final int HELD_PIECE_Y = 300;
 
 	public static final int STARTING_PIECE_X = 4;
 	public static final int STARTING_PIECE_Y = 0;
@@ -52,7 +52,6 @@ public class Game {
 		this.field = new Field(Game.FIELD_HEIGHT, Game.FIELD_WIDTH);
 		this.setCurrentPiece(PieceGenerator.generatePiece());
 		this.setNextPiece(PieceGenerator.generatePiece(Game.NEXT_PIECE_X, Game.NEXT_PIECE_Y));
-		this.setHoldPiece((PieceGenerator.generatePiece(Game.HELD_PIECE_X, Game.HELD_PIECE_Y)));
 
 	}		
 
@@ -173,10 +172,11 @@ public class Game {
 		this.field.render(this.graphics);
 		this.currentPiece.render(this.graphics);
 		this.nextPiece.render(this.graphics);
+		if(holdPiece==null){
+			this.currentPiece.render(this.graphics);
+		}
+		else {this.holdPiece.render(this.graphics);}
 		//this.holdPiece.render(this.graphics);
-
-
-		
 		// Checks if a State exists and render()
 		// if (StateManager.getState() != null){
 		// StateManager.getState().render(this.g);
@@ -246,20 +246,20 @@ public class Game {
 					return;
 				}
 				if (holdPiece == null) {
-					holdPiece = currentPiece;
-					currentPiece = PieceGenerator.generatePiece();
+					holdPiece = nextPiece;
+					nextPiece = PieceGenerator.generatePiece();
 				} else {
-					Piece tmp = currentPiece;
-					currentPiece = holdPiece;
+					Piece tmp = nextPiece;
+					nextPiece = holdPiece;
 					holdPiece = tmp;
-
+					this.render();
 				}
-				 {
+
 
 				Canhold =false;
-					 this.render();
 
-		}
+
+
 		
 			}
 
