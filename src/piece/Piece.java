@@ -28,22 +28,19 @@ public class Piece {
 		int shapeHeight = shape.getHeight();
 		int shapeWidth = shape.getWidth();
 		for (int row = 0; row < shapeHeight; row++) {
-			for (int col = 0; col < shapeWidth; col++) {				
-				if (shape.isPieceBrick(row, col)) {				
+			for (int col = 0; col < shapeWidth; col++) {
+				if (shape.isPieceBrick(row, col)) {
 					int rectX = (this.x + col) * Piece.RECT_WIDTH;
 					int rectY = (this.y + row) * Piece.RECT_HEIGHT;
 					g.setColor(shape.getColor());
 					g.fillRect(rectX, rectY, Piece.RECT_WIDTH, Piece.RECT_HEIGHT);
 					g.setColor(Color.WHITE);
-			     	g.drawRect(rectX, rectY, Piece.RECT_WIDTH, Piece.RECT_HEIGHT);
+					g.drawRect(rectX, rectY, Piece.RECT_WIDTH, Piece.RECT_HEIGHT);
 
 				}
 			}
 		}
 	}
-
-
-
 
 	public void tick() {
 		this.moveDown();
@@ -78,8 +75,6 @@ public class Piece {
 		this.setY(Game.STARTING_PIECE_Y);
 	}
 
-
-
 	public void moveLeft() {
 		this.x--;
 	}
@@ -99,7 +94,7 @@ public class Piece {
 	private void setShape(PieceShape shape) {
 		this.shape = shape;
 	}
-	
+
 	public PieceShape getShape() {
 		return this.shape;
 	}
